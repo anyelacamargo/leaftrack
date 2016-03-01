@@ -6,7 +6,7 @@ import scipy as sp
 from scipy import ndimage as ndi
 import matplotlib.pyplot as plt
 
-from skimage import io as sio
+#from skimage import filters
 
 from skimage.filters import sobel
 from skimage.segmentation import slic, join_segmentations
@@ -16,6 +16,7 @@ from skimage import data, img_as_float
 from scipy import ndimage
 from skimage import restoration as rest
 
+from skimage import io as sio
 
 ### P4D ###
 import multiprocessing
@@ -45,7 +46,7 @@ import P3D_segment
 reload(P3D_segment)
 
 
-folder = os.path.join(os.getenv("HOME"), 'work/dataint/plantimages/segTestAra');
+folder = os.path.join(os.getenv("HOME"), 'repo/leaftrack');
 
 # Set parameters
 dirF=os.path.join(folder,'Focus')
