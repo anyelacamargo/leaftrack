@@ -24,6 +24,7 @@ import numpy as np
 import os
 import sys
 import time
+import getopt
 
 sys.path.append('P4D_SourceCode')
 import P4D_help                                 # implementations of various auxiliary functions
@@ -46,34 +47,69 @@ import P3D_segment
 reload(P3D_segment)
 
 
-folder = os.path.join(os.getenv("HOME"), 'repo/leaftrack');
+def main(argv):
+   ffile = ''
+   nfile = ''
+   pfile = ''
+   optlist, args = getopt.getopt(sys.argv[1:],':p:n:f:h')
+   for opt, par in optlist:
+      if opt == '-h':
+         print 'python segtestAra.py -f <Focus> -n <Nums> -p <Pics>'
+         sys.exit()
+      elif opt == "-f" :
+         ffile = par
+      elif opt == "-n" :
+         nfile = par
+      elif opt == "-p" :
+         pfile = par
+      else :
+         raise StandardError, 'error "%s"' % opt
 
-# Set parameters
-dirF=os.path.join(folder,'Focus')
-dirN=os.path.join(folder,'Nums')
-dirP=os.path.join(folder,'Pics')
-SegBGupper=25                                   # upper threshold for image background
-SegFGlower=80                                   # lower threshold for image foreground
-SegSigmaGauss=50.0                              # sigma of Gaussian filter for smoothing depth image
-SegSigmaCanny=1.0                               # sigma of Canny filter for detection of leaf edges             
-SegThresSlope=0.1                               # slope of radially increasing threshold to find watershed seeds from distance transformed image
-SegThresAbsci=10.0                              # abscissa of radially increasing threshold to find watershed seeds from distance 
-SegRadiusOriginHeight= 2.0                     # size of disk for determining height of origin in pixels
-SegRadiusLeafHeight=5.0                        # size of disk for determining height of leaf positions in pixels
-SegRadiusStemEraser=5.0                        # size of disk for removing leaf petioles
+   print 'Input file is "', ffile
+   print 'Output file is "', nfile
+   print 'Output file is "', pfile
+   segmentLeaf(ffile, nfile, pfile)
 
-for i in [dirN,dirP]:                                 # generation output folders if not present
-    if(not os.path.isdir(i)): os.mkdir(i)
 
-for id1 in range(9):
-    imid = 'test'+str(id1+1)
-    imR = sio.imread(os.path.join(dirF, imid+'.png')) # Raw image
-    imF = sio.imread(os.path.join(dirF, imid+'.png'), as_grey = True) # grey image
-    imF = imF*255 #image at grey scale, value 0-255    
-    imD = np.ones(imF.shape)  # No depth image
-    SegBGupper = np.percentile(imF, 75)
-    ly, lx = imF.shape
-    CropRadius = min(ly, lx)/2 - 10
-    inp= imid, imR, imF, imD, dirP, dirN, SegBGupper,SegFGlower, CropRadius, SegSigmaGauss,SegSigmaCanny,SegThresSlope,SegThresAbsci,SegRadiusOriginHeight,SegRadiusLeafHeight,SegRadiusStemEraser
-    paramFile = P3D_segment.segment(inp)
+def segmentLeaf(f,n,p):
+   folder = os.path.join(os.getenv("HOME"), 'repo/leaftrack');
+
+  # Set parameters
+   #dirF=os.path.join(folder,'Focus')
+   #dirN=os.path.join(folder,'Nums')
+   #dirP=os.path.join(folder,'Pics')
+   
+   dirF=os.path.join(folder,f)
+   dirN=os.path.join(folder,n)
+   dirP=os.path.join(folder,p)
+
+   SegBGupper=25                                   # upper threshold for image background
+   SegFGlower=80                                   # lower threshold for image foreground
+   SegSigmaGauss=50.0                              # sigma of Gaussian filter for smoothing depth image
+   SegSigmaCanny=1.0                               # sigma of Canny filter for detection of leaf edges             
+   SegThresSlope=0.1                               # slope of radially increasing threshold to find watershed seeds from distance transformed image
+   SegThresAbsci=10.0                              # abscissa of radially increasing threshold to find watershed seeds from distance 
+   SegRadiusOriginHeight= 2.0                     # size of disk for determining height of origin in pixels
+   SegRadiusLeafHeight=5.0                        # size of disk for determining height of leaf positions in pixels
+   SegRadiusStemEraser=5.0                        # size of disk for removing leaf petioles
+
+   for i in [dirN,dirP]:                                 # generation output folders if not present
+       if(not os.path.isdir(i)): os.mkdir(i)
+
+   for id1 in range(9):
+      imid = 'test'+str(id1+1)
+      imR = sio.imread(os.path.join(dirF, imid+'.png')) # Raw image
+      imF = sio.imread(os.path.join(dirF, imid+'.png'), as_grey = True) # grey image
+      imF = imF*255 #image at grey scale, value 0-255    
+      imD = np.ones(imF.shape)  # No depth image
+      SegBGupper = np.percentile(imF, 75)
+      ly, lx = imF.shape
+      CropRadius = min(ly, lx)/2 - 10
+      inp= imid, imR, imF, imD, dirP, dirN, SegBGupper,SegFGlower, CropRadius, SegSigmaGauss,SegSigmaCanny,SegThresSlope,SegThresAbsci,SegRadiusOriginHeight,SegRadiusLeafHeight,SegRadiusStemEraser
+      paramFile = P3D_segment.segment(inp)
     #para=np.load(paramFile)
+
+if __name__ == "__main__":
+   #import sys
+   main(sys.argv[:])
+
