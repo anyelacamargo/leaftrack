@@ -93,7 +93,7 @@ def segmentLeaf(f,n,p):
    for i in [dirN,dirP]:                                 # generation output folders if not present
        if(not os.path.isdir(i)): os.mkdir(i)
 
-   for id1 in range(9):
+   for id1 in range(10):
       imid = 'test'+str(id1+1)
       imR = sio.imread(os.path.join(dirF, imid+'.png')) # Raw image
       imF = sio.imread(os.path.join(dirF, imid+'.png'), as_grey = True) # grey image
