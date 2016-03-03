@@ -72,16 +72,13 @@ def main(argv):
 
 
 def segmentLeaf(f,n,p):
-   folder = os.path.join(os.getenv("HOME"), 'repo/leaftrack');
+   #folder = os.path.join(os.getenv("HOME"), 'repo/leaftrack');
 
   # Set parameters
-   #dirF=os.path.join(folder,'Focus')
-   #dirN=os.path.join(folder,'Nums')
-   #dirP=os.path.join(folder,'Pics')
    
-   dirF=os.path.join(folder,f)
-   dirN=os.path.join(folder,n)
-   dirP=os.path.join(folder,p)
+   dirF=os.path.join(f)
+   dirN=os.path.join(n)
+   dirP=os.path.join(p)
 
    SegBGupper=25                                   # upper threshold for image background
    SegFGlower=80                                   # lower threshold for image foreground
